@@ -1,0 +1,55 @@
+Problem:
+-------
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
+Example:
+Input: head = [1,2,3,4,5], n = 2
+Output: [1,2,3,5]
+
+Constraints:
+The number of nodes in the list is sz.
+1 <= sz <= 30
+0 <= Node.val <= 100
+1 <= n <= sz
+
+Solution:
+--------
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        if(head==null){
+            return null;
+        }
+        ListNode temp = head;
+        int size=0;
+        while(temp!=null){
+            size++;
+            temp=temp.next;
+        }
+        if(n>size){
+            return null;
+        }
+        int move = size-n;
+        ListNode temp2=head;
+        ListNode prev=null;
+        if(move==0){
+            return head.next;
+        }
+        for(int i=0;i<move;i++){
+            prev=temp2;
+            temp2=temp2.next;
+        }
+        prev.next = temp2.next;
+        return head;
+    }
+}
+Time Complexity: O(N)
+Space Complexity: O(1)
