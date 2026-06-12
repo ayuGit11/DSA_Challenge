@@ -1,0 +1,67 @@
+Problem:
+-------
+Given the head of a singly linked list, return true if the linked list is a palindrome, and false otherwise.
+
+Example 1:
+Input: head = [1,2,2,1]
+Output: true
+
+Example 2:
+Input: head = [1,2]
+Output: false
+
+Constraints:
+The number of nodes in the list is in the range [1, 10^5].
+0 <= Node.val <= 9
+
+Solution:
+--------
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverse(ListNode head){
+         ListNode prev = null;
+         ListNode curr = head;
+         ListNode next = head;
+         while(curr!=null){
+            next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+         }
+         return prev;
+    }
+    public boolean isPalindrome(ListNode head) {
+        if(head==null || head.next==null){
+            return true;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast!=null && fast.next!=null){
+            slow=slow.next;
+            fast=fast.next.next;
+        }
+        ListNode mid = slow;
+        ListNode temp1=head;
+        ListNode temp2 = reverse(slow);
+        while(temp2!=null){
+            if(temp1.val != temp2.val){
+                return false;
+            }
+            temp1=temp1.next;
+            temp2=temp2.next;
+        }
+        return true;
+    }
+}
+
+Time Complexity: O(n)
+Space Complexity: O(1)
