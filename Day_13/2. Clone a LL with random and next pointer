@@ -1,0 +1,74 @@
+Problem:
+-------
+Given a linked list where every node in the linked list contains two pointers:
+‘next’ which points to the next node in the list.
+‘random’ which points to a random node in the list or ‘null’.
+Create a ‘deep copy’ of the given linked list and return it.
+
+Example: Input: head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
+         Output: [[7,null],[13,0],[11,4],[10,2],[1,0]]
+
+Constraints:
+0 <= n <= 1000
+-10^4 <= Node.val <= 10^4
+Node.random is null or is pointing to some node in the linked list.
+
+Solution:
+--------
+/*
+// Definition for a Node.
+class Node {
+    int val;
+    Node next;
+    Node random;
+
+    public Node(int val) {
+        this.val = val;
+        this.next = null;
+        this.random = null;
+    }
+}
+*/
+
+class Solution {
+    public void insertNodeInBetween(Node head){
+        Node temp=head;
+        while(temp!=null){
+            Node nextN = temp.next;
+            Node newNode = new Node(temp.val);
+            temp.next = newNode;
+            newNode.next = nextN;
+            temp = nextN;
+        }
+    }
+    public void connectRandomPointers(Node head){
+        Node temp = head;
+        while(temp!=null){
+            Node copyNode = temp.next;
+            if(temp.random!=null) copyNode.random = temp.random.next;
+            else copyNode.random = null;
+            temp=temp.next.next;
+        }
+    }
+    public Node getDeepCopyList(Node head){
+        Node temp = head;
+        Node dummyHead = new Node(-1);
+        Node res = dummyHead;
+        while(temp!=null){
+            dummyHead.next = temp.next;
+            dummyHead = dummyHead.next;
+            temp.next = temp.next.next;
+            temp=temp.next;
+        }
+        return res.next;
+    }
+    public Node copyRandomList(Node head) {
+        if(head==null) return null;
+        insertNodeInBetween(head);
+        connectRandomPointers(head);
+        return getDeepCopyList(head);
+    }
+}
+
+Time Complexity: O(3N) equivalent to O(N)
+Space Complexity: O(N)
