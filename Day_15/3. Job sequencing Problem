@@ -1,0 +1,58 @@
+Problem:
+--------
+You are given a set of N jobs where each job comes with a deadline and profit. The profit can only be earned upon completing the job within its deadline. 
+Find the number of jobs done and the maximum profit that can be obtained. Each job takes a single unit of time and only one job can be performed at a time
+Example 1:
+Input:  N = 4, Jobs = {(1, 4, 20), (2, 1, 10), (3, 1, 40), (4, 1, 30)}  
+Output: 2 60  
+Explanation: 
+- The 3rd job with a deadline of 1 is performed during the first unit of time.  
+- The 1st job is performed during the second unit of time as its deadline is 4.  
+Profit = 40 + 20 = 60.  
+So, the result is 2 jobs with a total profit of 60.
+
+Solution:
+--------
+class Solution {
+    class Job {
+        int idx, deadline, profit;
+        Job(int idx, int deadline, int profit) {
+            this.idx = idx;
+            this.deadline = deadline;
+            this.profit = profit;
+        }
+    }
+    int JobSequencing(int deadline[], int profit[]) {
+        int n = deadline.length;
+        Job jobs[] = new Job[n];
+
+        for (int i = 0; i < n; i++) {
+            jobs[i] = new Job(i, deadline[i], profit[i]);
+        }
+        Arrays.sort(jobs, (a, b) -> b.profit - a.profit);
+        int maxDeadline = 0;
+        for (Job j : jobs) {
+            maxDeadline = Math.max(maxDeadline, j.deadline);
+        }
+        int slot[] = new int[maxDeadline + 1];
+        Arrays.fill(slot, -1);
+
+        int countJobs = 0;
+        int totalProfit = 0;
+
+        for (int i = 0; i < n; i++) {
+           for (int j = jobs[i].deadline; j > 0; j--) {
+                if (slot[j] == -1) {
+                    slot[j] = jobs[i].idx;
+                    countJobs++;
+                    totalProfit += jobs[i].profit;
+                    break;
+                }
+            }
+        }
+        return totalProfit;
+    }
+}
+
+Time Complexity: O(N x max(deadline))
+Space Complexity: O(N)
