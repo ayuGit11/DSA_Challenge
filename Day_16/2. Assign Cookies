@@ -1,0 +1,34 @@
+Problem:
+-------
+Consider a scenario where a teacher wants to distribute cookies to students, with each student receiving at most one cookie.
+Given two arrays, student and cookie, the ith value in the student array describes the minimum size of cookie that the ith student can be assigned. 
+The jth value in the cookie array represents the size of the jth cookie. If cookie[j] >= student[i], the jth cookie can be assigned to the ith student.
+Maximize the number of students assigned with cookies and output the maximum number.
+
+Example:
+Input : Student = [1, 2, 3] , Cookie = [1, 1]
+Output :1
+Explanation : Only the first cookie (1) satisfies the first student (1), therefore only 1 student is content.
+
+Solution:
+--------
+class Solution{
+   int findContentChildren(int[] greed, int[] cookies) {
+    Arrays.sort(greed);
+    Arrays.sort(cookies);
+    int child = 0;      // current child
+    int cookie = 0;     // current cookie
+    while (child < greed.length && cookie < cookies.length) {
+        // If current cookie can satisfy current child
+        if (cookies[cookie] >= greed[child]) {
+            child++;    // child is satisfied
+        }
+        // Move to next cookie
+        cookie++;
+    }
+    return child;
+  }
+}
+
+Time Complexity:O(n*logn + m*logm)
+Space Complexity:O(1)
