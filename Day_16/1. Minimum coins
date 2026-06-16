@@ -1,0 +1,39 @@
+Problem:
+-------
+ Given an integer array of coins representing coins of different denominations and an integer amount representing a total amount of money. 
+ Return the fewest number of coins that are needed to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1. 
+ There are infinite numbers of coins of each type
+
+Example:
+Input: coins = [1, 2, 5], amount = 11
+Output: 3
+Explanation: 11 = 5 + 5 + 1. We need 3 coins to make up the amount 11.
+
+********Greedy doesn't work here********** eg:[1,5,6,6] target=11, Greedily we select 9 & 2 coins of 1--->[9,1,1].  But actual solution = [5 6]
+
+Solution:
+--------
+class Solution {
+    int coinChange(int coins[], int amount) {
+        int dp[] = new int[amount + 1];
+        Arrays.fill(dp, -2);
+        return helper(coins, amount, dp);
+    }
+    int helper(int[] coins, int rem, int[] dp) {
+        if (rem == 0) return 0;
+        if (rem < 0) return -1;
+        if (dp[rem] != -2) return dp[rem];
+        int mini = Integer.MAX_VALUE;
+        for (int coin : coins) {
+            int res = helper(coins, rem - coin, dp);
+            if (res >= 0 && res < mini) {
+                mini = 1 + res;
+            }
+        }
+        dp[rem] = (mini == Integer.MAX_VALUE) ? -1 : mini;
+        return dp[rem];
+    }
+}
+
+Time Complexity: O(N*T), there are total of N*T states.
+Space Complexity: O(N*T) + O(N), additonal space used to for memo table and recursion stack.
