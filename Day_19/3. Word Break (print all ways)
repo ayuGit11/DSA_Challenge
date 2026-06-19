@@ -1,0 +1,49 @@
+Problem:
+-------
+You are given a string s and a list dictionary[] of words. Your task is to determine whether the string s can be formed by concatenating one or more words
+from the dictionary[].
+
+Note: From dictionary[], any word can be taken any number of times and in any order.
+
+Examples 1:
+Input: s = "ilike", dictionary[] = ["i", "like", "gfg"]
+Output: true
+Explanation: s can be breakdown as "i like".
+
+Examples 2:
+Input: s = "ilikemangoes", dictionary[] = ["i", "like", "man", "india", "gfg"]
+Output: false
+Explanation: s cannot be formed using dictionary[] words.
+
+Constraints:
+1 ≤ s.size() ≤ 3000
+1 ≤ dictionary.size() ≤ 1000
+1 ≤ dictionary[i].size() ≤ 100
+
+Solution:
+--------
+class Solution {
+    public boolean wordBreak(String s, String[] dictionary) {
+        // code here
+        Set<String> wordSet = new HashSet<>(Arrays.asList(dictionary));
+        int maxLen=0;
+        for(String word:dictionary){
+            maxLen = Math.max(maxLen,word.length());
+        }
+        int n = s.length();
+        boolean dp[]=new boolean[n+1];
+        dp[0]=true;
+        for(int i=1;i<=n;i++){
+            for(int j=Math.max(0, i-maxLen); j<i; j++){
+                if(dp[j] && wordSet.contains(s.substring(j,i))){
+                    dp[i]=true;
+                    break;
+                }
+            }
+        }
+        return dp[n];
+    }
+}
+
+Time Complexity: O(N^2)
+Space Complexity: O(N)
