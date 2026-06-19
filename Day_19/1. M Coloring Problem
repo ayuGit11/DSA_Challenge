@@ -1,0 +1,62 @@
+Problem:
+-------
+Given an undirected graph and a number m, determine if the graph can be colored with at most m colors such that no two adjacent vertices 
+of the graph are colored with the same color.
+Example 1:
+Input: N = 4  M = 3  E = 5  
+Edges[] = {(0, 1),(1, 2),(2, 3),(3, 0),(0, 2)}  
+Output:1  
+Explanation: It is possible to color the given graph using 3 colors, so the answer is 1 (possible).
+
+Constraints:
+1 ≤ V ≤ 10
+1 ≤ E = edges.size() ≤ (V*(V-1))/2
+0 ≤ edges[i][j] ≤ V-1
+1 ≤ m ≤ V
+
+Solution:
+--------
+class Solution {
+    boolean isPossible(List<List<Integer>> graph,int col,int color[],int node){
+       List<Integer> neigh = graph.get(node);
+       for(int i=0;i<neigh.size();i++){
+           if(color[neigh.get(i)]==col){
+               return false;
+           }
+       }
+       return true;
+    }
+    boolean helper(List<List<Integer>> graph,int color[],int node,int m,int n){
+        if(node==n){
+            return  true;
+        }   
+        for(int j=1;j<=m;j++){
+            if(isPossible(graph,j,color,node)){
+                color[node]=j;
+                if(helper(graph,color,node+1,m,n)) return true;
+                color[node]=0;
+            }
+        }
+        return false;
+          
+    }
+    boolean graphColoring(int v, int[][] edges, int m) {
+        // code here
+        List<List<Integer>> graph = new ArrayList<>();
+        for(int i=0;i<v;i++){
+            graph.add(new ArrayList<>());
+        }
+        for(int i=0;i<edges.length;i++){
+            int src = edges[i][0];
+            int dest = edges[i][1];
+            graph.get(src).add(dest);
+            graph.get(dest).add(src);
+        }
+        int color[]=new int[v];
+        return helper(graph,color,0,m,v);
+    }
+}
+
+Time Complexity: O(m^N), where m is the number of colors and N is the number of nodes in the graph. 
+Space Complexity: O(N), where N is the number of nodes in the graph. 
+  
