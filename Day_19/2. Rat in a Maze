@@ -1,0 +1,60 @@
+Problem:
+-------
+Given a grid of dimensions n x n. A rat is placed at coordinates (0, 0) and wants to reach at coordinates (n-1, n-1).
+Find all possible paths that rat can take to travel from (0, 0) to (n-1, n-1). 
+The directions in which rat can move are 'U' (up) , 'D' (down) , 'L' (left) , 'R' (right).
+The value 0 in grid denotes that the cell is blocked and rat cannot use that cell for travelling, 
+whereas value 1 represents that rat can travel through the cell. If the cell (0, 0) has 0 value, then mouse cannot move to any other cell.
+
+Example:
+Input: n = 4 , grid = [ [1, 0, 0, 0] , [1, 1, 0, 1], [1, 1, 0, 0], [0, 1, 1, 1] ]
+Output: ["DDRDRR" , "DRDDRR"]
+Explanation: The rat has two different path to reach (3, 3).
+The first path is (0, 0) => (1, 0) => (2, 0) => (2, 1) => (3, 1) => (3, 2) => (3, 3).
+The second path is (0,0) => (1,0) => (1,1) => (2,1) => (3,1) => (3,2) => (3,3).
+
+Constraints:
+2 ≤ n ≤ 5
+0 ≤ maze[i][j] ≤ 1
+
+Solution:
+--------
+class Solution {
+    public ArrayList<String> ratInMaze(int[][] maze) {
+        // code here
+        ArrayList<String> result = new ArrayList<>();
+        int n= maze.length;
+        int visited[][] = new int[n][n];
+        if(maze[0][0]==1){
+            solve(0,0,n,maze,visited,"",result);
+        }
+        return result;
+    }
+    public void solve(int i,int j,int n,int maze[][],int visited[][],String path, ArrayList<String> result){
+        //base Condition
+        if(i==n-1 && j==n-1){
+            result.add(path);
+            return;
+        }
+        visited[i][j]=1;
+        if(isSafe(i+1,j,n,maze,visited)){
+            solve(i+1,j,n,maze,visited,path+"D",result);
+        }
+        if(isSafe(i,j-1,n,maze,visited)){
+            solve(i,j-1,n,maze,visited,path+"L",result);
+        }
+        if(isSafe(i,j+1,n,maze,visited)){
+            solve(i,j+1,n,maze,visited,path+"R",result);
+        }
+        if(isSafe(i-1,j,n,maze,visited)){
+            solve(i-1,j,n,maze,visited,path+"U",result);
+        }
+        visited[i][j]=0;
+    }
+    boolean isSafe(int i,int j,int n,int maze[][],int visited[][]){
+        return (i>=0 && i<n && j>=0 && j<n && maze[i][j]==1 && visited[i][j]==0);
+    }
+}
+
+Time Complexity: O(4^(N*N))
+Space Complexity: O(N*N)
