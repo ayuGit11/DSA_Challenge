@@ -1,0 +1,71 @@
+Problem:
+--------
+Given an integer array of size n, find the maximum of the minimums for every window size from 1 to n.For each specific window size k (where 1<=k<=n):
+Find all possible contiguous subarrays (windows) of size k.Determine the minimum element within each of these windows.
+Find the maximum value among all those minimums.Output this maximum value for every k from 1 to n.
+
+Example:
+Input Array: [10, 20, 30, 50, 10, 70, 30]
+Output Array: [70, 30, 20, 10, 10, 10, 10]
+
+Explanation:
+Window size k=1:
+Windows: [10], [20], [30], [50], [10], [70], [30]
+Minimums: 10, 20, 30, 50, 10, 70, 30
+Maximum of minimums = 70
+
+Window size k=2:
+Windows: [10,20], [20,30], [30,50], [50,10], [10,70], [70,30]
+Minimums: 10, 20, 30, 10, 10, 30
+Maximum of minimums = 30
+
+Similarly, for all window size.
+
+Solution:
+--------
+class Solution{
+    public static int[] maxOfMin(int[] arr, int n) {
+        int left[] = new int[n];
+        int right[] = new int[n];
+        Stack<Integer> stack = new Stack<>();
+        
+        // 1. Find indices of previous smaller elements:Left[] 
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && arr[stack.peek()] >= arr[i]) {
+                stack.pop();
+            }
+            left[i] = stack.isEmpty() ? -1 : stack.peek();
+            stack.push(i);
+        }
+        stack.clear();//reuse stack
+
+        // 2. Find indices of next smaller elements:right[]
+        for (int i = n - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && arr[stack.peek()] >= arr[i]) {
+                stack.pop();
+            }
+            right[i] = stack.isEmpty() ? n : stack.peek();
+            stack.push(i);
+        }
+
+        // 3. Create an answer array initialized to 0
+        int ans[] = new int[n + 1]; 
+
+        // 4. Fill answer array based on maximum window length for each element
+        for (int i = 0; i < n; i++) {
+            int len = right[i] - left[i] - 1;
+            ans[len] = Math.max(ans[len], arr[i]);
+        }
+
+        // 5. Some entries might be empty. Fill them from right to left.
+        // A maximum for window size 'x' is also valid for window size 'x-1'
+        for (int i = n - 1; i >= 1; i--) {
+            ans[i] = Math.max(ans[i], ans[i + 1]);
+        }
+
+        // Return results ignoring 0th index (sizes 1 to n)
+        return Arrays.copyOfRange(ans, 1, n + 1);
+      }
+    }
+    Time Complexity: O(N)
+    Space Complexity: O(N)
