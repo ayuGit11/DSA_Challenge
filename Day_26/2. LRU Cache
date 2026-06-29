@@ -1,0 +1,114 @@
+Problem:
+--------
+Program for Least Recently Used (LRU) Page Replacement Algorithm.
+Design a data structure that follows the constraints of a Least Recently Used (LRU) cache.
+Implement the LRUCache class:
+LRUCache(int capacity): Initialize the LRU cache with positive size capacity.
+int get(int key): Return the value of the key if the key exists, otherwise return -1.
+void put(int key, int value): Update the value of the key if the key exists. Otherwise, add the key-value pair to the cache.
+If the number of keys exceeds the capacity from this operation, evict the least recently used key.
+The functions get and put must each run in O(1) average time complexity.
+
+Example:
+Input: ["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]
+[[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]
+Output: [null, null, null, 1, null, -1, null, -1, 3, 4]
+Explanation: 
+LRUCache lRUCache = new LRUCache(2);
+lRUCache.put(1, 1); // cache is {1=1}
+lRUCache.put(2, 2); // cache is {1=1, 2=2}
+lRUCache.get(1);    // return 1
+lRUCache.put(3, 3); // LRU key was 2, evicts key 2, cache is {1=1, 3=3}
+lRUCache.get(2);    // returns -1 (not found)
+lRUCache.put(4, 4); // LRU key was 1, evicts key 1, cache is {4=4, 3=3}
+lRUCache.get(1);    // return -1 (not found)
+lRUCache.get(3);    // return 3
+lRUCache.get(4);    // return 4
+
+Solution:
+--------
+import java.util.*;
+
+// Class representing the LRU Cache
+class LRUCache {
+    // Doubly linked list node class
+    class Node {
+        int key;
+        int val;
+        Node next;
+        Node prev;
+        // Constructor to initialize node
+        Node(int _key, int _val) {
+            key = _key;
+            val = _val;
+        }
+    }
+    // Head and tail dummy nodes
+    Node head = new Node(-1, -1);
+    Node tail = new Node(-1, -1);
+    // Capacity of cache
+    int cap;
+    // Hash map to store key-node mapping
+    HashMap<Integer, Node> map = new HashMap<>();
+    
+    // Constructor to initialize LRU cache
+    public LRUCache(int capacity) {
+        cap = capacity;
+        head.next = tail;
+        tail.prev = head;
+    }
+    // Function to add a node right after head
+    void addNode(Node newNode) {
+        Node temp = head.next;
+        newNode.next = temp;
+        newNode.prev = head;
+        head.next = newNode;
+        temp.prev = newNode;
+    }
+    // Function to remove a given node from list
+    void deleteNode(Node delNode) {
+        Node delPrev = delNode.prev;
+        Node delNext = delNode.next;
+        delPrev.next = delNext;
+        delNext.prev = delPrev;
+    }
+    // Function to get value from cache
+    public int get(int key_) {
+        // If key exists in cache
+        if (map.containsKey(key_)) {
+            Node resNode = map.get(key_);
+            int res = resNode.val;
+            // Remove old mapping
+            map.remove(key_);
+            // Move accessed node to front
+            deleteNode(resNode);
+            addNode(resNode);
+            // Update map
+            map.put(key_, head.next);
+            return res;
+        }
+        // If not found
+        return -1;
+    }
+    // Function to put key-value into cache
+    public void put(int key_, int value) {
+        // If key already exists
+        if (map.containsKey(key_)) {
+            Node existingNode = map.get(key_);
+            map.remove(key_);
+            deleteNode(existingNode);
+        }
+        // If capacity reached
+        if (map.size() == cap) {
+            map.remove(tail.prev.key);
+            deleteNode(tail.prev);
+        }
+        // Insert new node at front
+        addNode(new Node(key_, value));
+        map.put(key_, head.next);
+    }
+}
+
+Time Complexity:get() function: O(1), accessing a value in the HashMap is O(1) on average.
+                put() function: O(1), checking and removing from the map as well as inserting into the doubly linked list is O(1).
+Space Complexity:O(capacity) , for storing up to capacity nodes in the doubly linked list and map.
