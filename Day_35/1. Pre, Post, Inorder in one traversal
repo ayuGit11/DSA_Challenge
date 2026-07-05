@@ -4,3 +4,70 @@ Given the root of a Binary Tree, return the preorder, inorder and postorder trav
 Input: Binary Tree: 4 2 5 3 -1 7 6 -1 9 -1 -1 8 -1 1
 Output: Preorder: [4, 2, 3, 9, 1, 5, 7, 6, 8], Inorder: [3, 1, 9, 2, 4, 7, 5, 8, 6], Postorder: [1, 9, 3, 2, 7, 8, 6, 5, 4] 
 
+Solution:
+---------
+import java.util.*;
+
+class Pair {
+    TreeNode node;
+    int state;
+
+    Pair(TreeNode node, int state) {
+        this.node = node;
+        this.state = state;
+    }
+}
+
+class Solution {
+    public List<List<Integer>> allTraversals(TreeNode root) {
+        //To Store all traversals in individual lists
+        List<Integer> pre = new ArrayList<>();
+        List<Integer> in = new ArrayList<>();
+        List<Integer> post = new ArrayList<>();
+
+        if (root == null) {
+            List<List<Integer>> ans = new ArrayList<>();
+            ans.add(pre);
+            ans.add(in);
+            ans.add(post);
+            return ans;
+        }
+
+        Stack<Pair> st = new Stack<>();
+        st.push(new Pair(root, 1));
+
+        while (!st.isEmpty()) {
+            Pair curr = st.pop();
+            // Preorder
+            if (curr.state == 1) {
+                pre.add(curr.node.val);
+                curr.state = 2;
+                st.push(curr);
+                if (curr.node.left != null) {
+                    st.push(new Pair(curr.node.left, 1));
+                }
+            }
+            // Inorder
+            else if (curr.state == 2) {
+                in.add(curr.node.val);
+                curr.state = 3;
+                st.push(curr);
+                if (curr.node.right != null) {
+                    st.push(new Pair(curr.node.right, 1));
+                }
+            }
+            // Postorder
+            else {
+                post.add(curr.node.val);
+            }
+        }
+        List<List<Integer>> ans = new ArrayList<>();
+        ans.add(pre);
+        ans.add(in);
+        ans.add(post);
+        return ans;
+    }
+}
+
+Time Complexity: O(N) 
+Space Complexity: O(N)  
