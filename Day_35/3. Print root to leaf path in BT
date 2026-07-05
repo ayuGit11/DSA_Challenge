@@ -1,0 +1,51 @@
+Problem:
+--------
+Given a Binary Tree and a reference to a root belonging to it. Return the path from the root node to the given leaf node.
+Note: No two nodes in the tree have the same data value and it is assured that the given node is present and a path always exists.
+
+Example:
+Input: Binary Tree: 1 2 3 4 5 -1 -1 -1 -1, Node: 7
+Output: [1, 2, 5, 7] 
+
+Solution:
+---------
+class Solution {
+    // Function to get path from root to node with value x
+    public boolean getPath(TreeNode root, List<Integer> arr, int x) {
+        // Base case: If node is null
+        if (root == null)
+            return false;
+            
+        // Add current node to path
+        arr.add(root.val);
+
+        // If current node is the target
+        if (root.val == x)
+            return true;
+
+        // Recurse into left and right children
+        if (getPath(root.left, arr, x) || getPath(root.right, arr, x))
+            return true;
+
+        // Backtrack if not found
+        arr.remove(arr.size() - 1);
+        return false;
+    }
+
+    // Function to return the final path vector
+    public List<Integer> solve(TreeNode root, int x) {
+        // Initialize result list
+        List<Integer> arr = new ArrayList<>();
+
+        // If tree is empty
+        if (root == null)
+            return arr;
+
+        // Call helper function
+        getPath(root, arr, x);
+        return arr;
+    }
+}
+
+Time Complexity: O(N)
+Space Complexity: O(N)
