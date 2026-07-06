@@ -1,0 +1,42 @@
+Problem:
+--------
+Given a Binary Tree, implement Morris Preorder Traversal and return the array containing its preorder sequence.
+Morris Preorder Traversal is a tree traversal algorithm aiming to achieve a space complexity of O(1) without recursion or an external data structure.
+The algorithm should efficiently visit each node in the binary tree in preorder sequence, printing or processing the node values as it traverses, 
+without using a stack or recursion.
+
+Example:
+Input:Binary Tree: 4 2 5 3 -1 7 6 -1 9 -1 -1 8 -1 1
+Output: [4 2 3 9 1 5 7 6 8]
+
+Solution:
+---------
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+       List<Integer> preorder = new ArrayList<>();
+        TreeNode cur = root;
+        while(cur != null){
+            if (cur.left == null) {
+                preorder.add(cur.val);
+                cur = cur.right;
+            } else {
+                TreeNode prev = cur.left;
+                while (prev.right!=null && prev.right != cur) {
+                    prev = prev.right;
+                }
+                if (prev.right == null) {
+                    prev.right = cur;
+                    preorder.add(cur.val);
+                    cur = cur.left;
+                } else {
+                    prev.right = null;
+                    cur = cur.right;
+                }
+            }
+        }
+        return preorder;
+    }
+}
+
+Time Complexity: O(N)
+Space Complexity: O(1)
