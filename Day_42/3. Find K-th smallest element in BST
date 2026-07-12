@@ -1,0 +1,29 @@
+Problem:
+--------
+Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.
+
+Example 1:
+Input: root = [3,1,4,null,2], k = 1
+Output: 1
+
+Solution:
+---------
+class Solution {
+    int cnt=0;
+    int ans=0;
+    public void solve(TreeNode root,int k){
+        if(root==null) return;
+        solve(root.left,k);
+        cnt++;
+        if(cnt==k){
+            ans = root.val;
+            return;
+        }
+        solve(root.right,k);
+    }
+    public int kthSmallest(TreeNode root, int k) {
+        solve(root,k);
+        return ans;
+    }
+Time Complexity: O(H)
+Space Complexity: O(H)
