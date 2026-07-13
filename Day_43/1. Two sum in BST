@@ -1,0 +1,57 @@
+Problem:
+--------
+Given the root of a binary search tree and an integer k, return true if there exist two elements in the BST such that their sum is equal to k, or false otherwise.
+
+Example 1:
+Input: root = [5,3,6,2,4,null,7], k = 9
+Output: true
+
+Solution:
+---------
+class BSTIterator {
+    Stack<TreeNode> stack = new Stack<>();
+    boolean reverse;
+    public BSTIterator(TreeNode root, boolean reverse) {
+        this.reverse = reverse;
+        pushAll(root);
+    }
+    private void pushAll(TreeNode node) {
+        while (node != null) {
+            stack.push(node);
+            if (reverse)
+                node = node.right;
+            else
+                node = node.left;
+        }
+    }
+    public int next() {
+        TreeNode temp = stack.pop();
+        if (reverse)
+            pushAll(temp.left);
+        else
+            pushAll(temp.right);
+        return temp.val;
+    }
+}
+class Solution {
+    public boolean findTarget(TreeNode root, int k) {
+        if (root == null) return false;
+
+        BSTIterator left = new BSTIterator(root, false);
+        BSTIterator right = new BSTIterator(root, true);
+
+        int i = left.next();
+        int j = right.next();
+
+        while (i < j){
+            int sum = i + j;
+            if (sum == k) return true;
+            else if (sum < k) i = left.next();
+            else j = right.next();
+        }
+        return false;
+    }
+}
+
+Time Complexity: O(N)
+Space Complexity: O(H)
